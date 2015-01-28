@@ -1,0 +1,225 @@
+//Main menu
+
+SELECT GTID FROM Student, Undergrad WHERE Student.GTID = $currentGTID
+                AND Student.Email = Undergrad.Email
+
+SELECT Tutor.Email FROM Tutor, Student WHERE
+                Student.GTID =  $currentGTID AND Student.Email = Tutor.Email
+
+SELECT GTID FROM Student, Undergrad WHERE Student.GTID = $currentGTID
+
+SELECT GTID FROM Professor WHERE GTID = $currentGTID
+
+SELECT GTID FROM Administrator WHERE GTID = '$currentGTID'
+
+
+
+//rateTutorForm
+
+SELECT * FROM Course
+
+
+
+//searchTutorForm
+
+SELECT * FROM Course
+
+
+
+//tutorApplicationForm
+
+SELECT * FROM Course
+
+
+
+//login.php
+
+SELECT * FROM User WHERE GTID ='$gtid' and Password ='$pass'
+
+//rateTutor.php
+
+SELECT Student.Email FROM Student
+        WHERE Student.GTID = $currentGTID AND Student.Name != '$tutName'
+
+SELECT Student.Email FROM Student, Tutors
+        WHERE Tutors.CourseSchool = '$course[0]' AND Tutors.CourseNumber = $course[1]
+        AND Tutors.Email = Student.Email AND Student.Name = '$tutName'
+
+INSERT INTO Rates (UndergradEmail, TutorEmail, NumEval, DescEval,
+            CourseSchool, CourseNumber) VALUES ('$stuEmailArray[0]', '$resultArray[0]', '$numEval',
+            '$descEval', '$course[0]', '$course[1]')
+
+
+
+//scheduleTutor.php
+
+SELECT Student.Email FROM Student
+        WHERE Student.GTID = $currentGTID AND Student.Email != '$emailDayTime[0]'
+
+SELECT * FROM Hires WHERE TutorEmail = '$emailDayTime[0]'
+        AND TIME = $emailDayTime[2] AND Semester = '$sem' AND Weekday = '$emailDayTime[1]'
+
+INSERT INTO Hires (TutorEmail, CourseSchool,
+            CourseNumber, UndergradEmail, Time, Semester, Weekday) VALUES
+            ('$emailDayTime[0]', '$courseSch', '$courseNum', '$studentEmailArray[0]',
+            '$emailDayTime[2]', '$sem', '$emailDayTime[1]')
+
+
+
+//searchTutor.php
+
+SELECT DISTINCT(Email), Name, AvgProfRating, NumProfs, AvgStuRatings, NumStudents
+        FROM (
+
+            SELECT TutorEmail, AVG(NumEval) AS AvgProfRating, COUNT(ProfGTID) AS NumProfs
+            FROM Recommends
+            GROUP BY TutorEmail
+            ) AS ProfInfo
+            RIGHT OUTER JOIN (
+
+                SELECT TutInfo.Name, TutInfo.Email
+                FROM (
+                    Tutor
+                    NATURAL JOIN TutorTimeSlot
+                    NATURAL JOIN Tutors
+                    NATURAL JOIN Student AS TutInfo
+                )
+                WHERE CourseSchool = '$course[0]'
+                AND CourseNumber = $course[1]
+                AND Semester =  'Summer'
+                AND ( (Weekday = 'Monday' AND Time IN (".implode(',',$monday).")) 
+                    OR (Weekday = 'Tuesday' AND Time IN (".implode(',',$tuesday)."))
+                    OR (Weekday = 'Wednesday' AND Time IN (".implode(',',$wednesday)."))
+                    OR (Weekday = 'Thursday' AND Time IN (".implode(',',$thursday)."))
+                    OR (Weekday = 'Friday' AND Time IN (".implode(',',$friday).")))
+
+            ) AS TutorInfo ON ProfInfo.TutorEmail = TutorInfo.Email
+            LEFT OUTER JOIN (
+
+                SELECT TutorEmail, AVG(NumEval) AS AvgStuRatings, COUNT(UndergradEmail) AS NumStudents
+                FROM Rates
+                WHERE Rates.CourseSchool = '$course[0]' AND Rates.CourseNumber = $course[1]
+                GROUP BY TutorEmail
+            ) AS PupilInfo ON Email = PupilInfo.TutorEmail
+            ORDER BY AvgStuRatings DESC
+
+SELECT Name, Email, Weekday, Time
+        FROM (
+            Tutor
+            NATURAL JOIN TutorTimeSlot
+            NATURAL JOIN Tutors
+            NATURAL JOIN Student AS TutInfo
+        )
+        WHERE CourseSchool = '$course[0]'
+        AND CourseNumber = $course[1]
+        AND Semester =  'Summer'
+        AND ( (Weekday = 'Monday' AND Time IN (".implode(',',$monday).")) 
+            OR (Weekday = 'Tuesday' AND Time IN (".implode(',',$tuesday)."))
+            OR (Weekday = 'Wednesday' AND Time IN (".implode(',',$wednesday)."))
+            OR (Weekday = 'Thursday' AND Time IN (".implode(',',$thursday)."))
+            OR (Weekday = 'Friday' AND Time IN (".implode(',',$friday).")))
+
+
+
+//tutorRec.php
+
+SELECT Tutor.Email FROM Student, Tutor 
+        WHERE Student.GTID = $tutGTID AND Student.Email = Tutor.Email
+
+INSERT INTO Recommends (TutorEmail, ProfGTID, NumEval, DescEval)
+            VALUES ('$resultArray[0]', '$currentGTID', '$numEval', '$descEval')
+
+
+
+//TutorApplication.php
+
+SELECT * FROM Student WHERE GTID ='$gtid' and Name ='$name'
+
+SELECT * FROM Student WHERE GTID ='$gtid' and Email ='$email'
+
+INSERT INTO Tutor (Email,Phone,GPA) VALUES ('$email','$phone','$gpa')
+
+INSERT INTO TutorTimeSlot (Email,Time,Semester,Weekday)".
+                "VALUES ('$email',$time,'Summer','$key')
+
+INSERT INTO Tutors   (Email,CourseSchool,CourseNumber,GTA)".
+                "VALUES ('$email','$school','$number',$isGTA)
+
+
+
+//File5.php
+
+SELECT Email FROM Student WHERE $currentGTID = Student.GTID
+
+SELECT Name FROM Student WHERE '$TutorEmailArray[0]' = Email
+
+SELECT TutorTimeSlot.Weekday, TutorTimeSlot.Time, Student.Name, Student.Email, Hires.CourseSchool, Hires.CourseNumber FROM Hires, Student, TutorTimeSlot WHERE Student.Email = Hires.UndergradEmail AND Hires.TutorEmail = '$TutorEmailArray[0]' AND TutorTimeSlot.Email = '$TutorEmailArray[0]' AND Hires.Weekday = TutorTimeSlot.Weekday AND Hires.Time = TutorTimeSlot.Time AND Hires.Semester = 'Summer'
+
+
+
+//Summary1.php
+
+SELECT * FROM Course
+
+SELECT H.Semester AS Semester,". 
+" COUNT( H.UndergradEmail ) AS TotalStudents,".
+" COUNT( H.TutorEmail ) AS TotalTutors".
+" FROM Hires AS H".
+" WHERE H.CourseSchool =  '$row[0]'".
+" AND H.CourseNumber =  '$row[1]'".
+" AND ( 
+
+
+
+
+//Summary2.php
+
+CREATE VIEW GradTAs AS
+SELECT C.CourseSchool, C.CourseNumber, TTS.Semester, COUNT(DISTINCT(T.Email)) AS TA, AVG(R.NumEval) AS Avg1
+FROM Course AS C, TutorTimeSlot AS TTS, Rates AS R, Tutors AS T
+WHERE (T.Email = TTS.Email AND T.Email = R.TutorEmail AND TTS.Email = R.TutorEmail)
+AND (C.CourseSchool = R.CourseSchool)
+AND (C.CourseNumber = R.CourseNumber)
+AND T.GTA = 1
+AND (TTS.Semester= '$FallSem' OR TTS.Semester = '$SpringSem' OR TTS.Semester = '$SummerSem')
+GROUP BY C.CourseSchool, C.CourseNumber, TTS.Semester
+
+
+
+CREATE VIEW NonGradTAs AS
+SELECT C.CourseSchool, C.CourseNumber, TTS.Semester, COUNT(DISTINCT(T.Email)) AS NonTA, AVG(R.NumEval) AS Avg2
+FROM Course AS C, TutorTimeSlot AS TTS, Rates AS R, Tutors AS T
+WHERE (T.Email = TTS.Email AND T.Email = R.TutorEmail AND
+      TTS.Email = R.TutorEmail)
+AND (C.CourseSchool = R.CourseSchool)
+AND (C.CourseNumber = R.CourseNumber)
+AND T.GTA = 0
+AND (TTS.Semester='$FallSem' OR TTS.Semester = '$SpringSem' OR TTS.Semester = '$SummerSem')
+GROUP BY C.CourseSchool, C.CourseNumber, TTS.Semester
+
+
+
+SELECT t1.CourseSchool, t1.CourseNumber, t1.Semester, t1.Avg1, t1.TA,
+t2.CourseSchool, t2.CourseNumber, t2.Semester, t2.Avg2, t2.NonTA
+FROM GradTAs AS t1
+LEFT JOIN NonGradTAs t2 ON t2.CourseSchool = t1.CourseSchool AND t1.CourseNumber = t2.CourseNumber
+GROUP BY t1.CourseSchool, t2.CourseSchool, t1.Semester, t2.Semester
+
+UNION
+
+SELECT t1.CourseSchool, t1.CourseNumber, t1.Semester, t1.Avg1, t1.TA,
+t2.CourseSchool, t2.CourseNumber, t2.Semester, t2. t2.Avg2, t2.NonTA
+FROM GradTAs AS t1
+RIGHT JOIN NonGradTAs t2 ON t2.CourseSchool = t1.CourseSchool AND t1.CourseNumber = t2.CourseNumber
+GROUP BY t1.CourseSchool, t2.CourseSchool, t1.Semester, t2.Semester
+
+
+
+DROP VIEW GradTAs
+
+DROP VIEW NonGradTAs
+
+
+
+
+

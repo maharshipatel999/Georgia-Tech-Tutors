@@ -1,0 +1,112 @@
+@charset "utf-8";
+#form {
+    position:fixed;
+    top: 50%;
+    left: 50%;
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 22px;
+    box-shadow: 0 0 30px 0 black;
+    text-align: center;
+}
+
+.loginForm {
+    width: 250px;
+    height: 150px;
+    margin-top: -75px;
+    margin-left: -125px;
+}
+
+.mainMenu {
+    width: 300px;
+    height: 200px;
+    margin-top: -100px;
+    margin-left: -150px;    
+}
+
+.evalForm {
+    width: 500px;
+    height: 300px;
+    margin-top: -175px;
+    margin-left: -275px;
+    text-align: left;
+}
+
+.searchForm {
+    width: 500px;
+    height: 360px;
+    margin-top: -210px;
+    margin-left: -275px; 
+}
+
+tr.spaceUnder > td
+{
+  padding-bottom: 1em;
+}
+
+
+/*TutorApp From*/
+.tutorAppForm {
+	width: 800px;
+    height: 320px;
+    margin-top: -160px;
+    margin-left: -400px;
+}
+
+#tutorAppFormLeft {
+	width:30%;
+	height:75%;
+	float:left;
+}
+
+#tutorAppFormMiddle {
+	width:20%;
+	height:75%;
+	float:left;
+}
+
+#tutorAppFormRight {
+	width:50%;
+	height:75%;
+	float:right;
+}
+
+#tutorAppFormRight td {
+	padding:0 3px 0 3px;
+}
+
+/* Summay1 */
+
+.summary1 {
+	width: 500px;
+    height: 400px;
+    margin-top: -200px;
+    margin-left: -250px;
+}
+
+.summary1 td {
+	max-height:10px;
+}
+
+/*Summary 2*/
+.summary2 {
+	width: 500px;
+    height: 250px;
+    margin-top: -175px;
+    margin-left: -250px;
+}
+
+/*Tut Schedule*/
+.tutSchedule {
+	width: 500px;
+    height: 200px;
+    margin-top: -100px;
+    margin-left: -250px;
+}
+
+.tutSchedule2 {
+	width: 600px;
+    height: 200px;
+    margin-top: -100px;
+    margin-left: -300px;
+}
